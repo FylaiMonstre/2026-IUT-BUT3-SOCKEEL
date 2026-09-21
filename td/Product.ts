@@ -44,52 +44,52 @@ export class Warehouse {
 }
 
 export class Price {
-  amt: number;
-  ccy: string;
-  mgn: number; // percentage
+  amount: number;
+  currency: string;
+  margin: number; // percentage
   vat: number; // percentage, applied on margin only
 
   constructor(amt: number, ccy: string) {
-    this.amt = amt;
-    this.ccy = ccy;
-    this.mgn = 15;
+    this.amount = amt;
+    this.currency = ccy;
+    this.margin = 15;
     this.vat = 20;
   }
 
   getResellerPrice(): number {
-    const mgnAmt = (this.amt * this.mgn) / 100;
+    const mgnAmt = (this.amount * this.margin) / 100;
     const vatAmt = (mgnAmt * this.vat) / 100;
-    return this.amt + mgnAmt + vatAmt;
+    return this.amount + mgnAmt + vatAmt;
   }
 
   getAmt(): number {
-    return this.amt;
+    return this.amount;
   }
 
   setAmt(amt: number): void {
-    this.amt = amt;
+    this.amount = amt;
   }
 
   getCcy(): string {
-    return this.ccy;
+    return this.currency;
   }
 
   setCcy(ccy: string): void {
-    this.ccy = ccy;
+    this.currency = ccy;
   }
 
   getMgn(): number {
-    return this.mgn;
+    return this.margin;
   }
 
   setMgn(mgn: number): void {
-    this.mgn = mgn;
+    this.margin = mgn;
   }
 }
 
 export class Product {
   id: string;
-  nm: string;
+  name: string;
   slg: string;
   price: Price;
   dscs: string[];
@@ -110,7 +110,7 @@ export class Product {
 
   constructor(
     id: string,
-    nm: string,
+    name: string,
     slg: string,
     price: Price,
     dscs: string[],
@@ -123,7 +123,7 @@ export class Product {
     wh: Warehouse | null,
   ) {
     this.id = id;
-    this.nm = nm;
+    this.name = name;
     this.slg = slg;
     this.price = price;
     this.dscs = dscs;
@@ -142,15 +142,15 @@ export class Product {
   getDisplayLabel(): string {
     let label: string;
     if (this.stat === "deprecated") {
-      label = `[DISCONTINUED] ${this.nm}`;
+      label = `[DISCONTINUED] ${this.name}`;
     } else {
       if (this.stk === 0) {
-        label = `[OUT OF STOCK] ${this.nm}`;
+        label = `[OUT OF STOCK] ${this.name}`;
       } else {
         if (this.stat === "active") {
-          label = this.nm;
+          label = this.name;
         } else {
-          label = this.nm;
+          label = this.name;
         }
       }
     }
@@ -268,13 +268,13 @@ export class Product {
   // --- Pricing ---
 
   getResellerPrice(): number {
-    const mgnAmt = (this.price.amt * this.price.mgn) / 100;
+    const mgnAmt = (this.price.amount * this.price.margin) / 100;
     const vatAmt = (mgnAmt * this.price.vat) / 100;
-    return this.price.amt + mgnAmt + vatAmt;
+    return this.price.amount + mgnAmt + vatAmt;
   }
 
   async setMargin(mgnPct: number): Promise<void> {
-    this.price.mgn = mgnPct;
+    this.price.margin = mgnPct;
     this.updatedAt = new Date();
     await prisma.product.update({
       where: { id: this.id },
@@ -288,7 +288,7 @@ export class Product {
     this.stk += qty;
     this.qty += qty;
     this.updatedAt = new Date();
-    console.log(`Restocking ${this.nm} at ${this.wh!.nm}`);
+    console.log(`Restocking ${this.name} at ${this.wh!.nm}`);
     await prisma.product.update({
       where: { id: this.id },
       data: { stock: this.stk, quantity: this.qty, updatedAt: this.updatedAt },
@@ -313,7 +313,7 @@ export class Product {
 
     // Notify all regional suppliers
     for (const [rgn, s] of this.splrRgns) {
-      this.notifs.push(this.mkNotif(s.eml, `Product sold: ${this.nm}`, `${qty} unit(s) of ${this.nm} were sold. Remaining stock: ${this.stk}.`));
+      this.notifs.push(this.mkNotif(s.eml, `Product sold: ${this.name}`, `${qty} unit(s) of ${this.name} were sold. Remaining stock: ${this.stk}.`));
     }
   }
 
@@ -331,11 +331,11 @@ export class Product {
 
     // Notify all regional suppliers
     for (const [, s] of this.splrRgns) {
-      this.notifs.push(this.mkNotif(s.eml, `Product deprecated: ${this.nm}`, `The product ${this.nm} has been deprecated and removed from the catalog.`));
+      this.notifs.push(this.mkNotif(s.eml, `Product deprecated: ${this.name}`, `The product ${this.name} has been deprecated and removed from the catalog.`));
     }
 
     // Notify customers
-    this.notifs.push(this.mkNotif("customers@omniproduct.com", `Product no longer available: ${this.nm}`, `${this.nm} is no longer available.`));
+    this.notifs.push(this.mkNotif("customers@omniproduct.com", `Product no longer available: ${this.name}`, `${this.name} is no longer available.`));
   }
 
   // small helper to cut down repetition in notif building

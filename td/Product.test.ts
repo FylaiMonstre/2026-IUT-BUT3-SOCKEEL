@@ -195,7 +195,7 @@ function makeTypedProduct() {
 describe("Price.getResellerPrice()", () => {
   it("adds margin then VAT on top of the margin only", () => {
     const price = new Price(100, "EUR");
-    price.mgn = 10;
+    price.margin = 10;
     price.vat = 20;
 
     // margin = 10, vat on margin = 2 -> 100 + 10 + 2
@@ -206,7 +206,7 @@ describe("Price.getResellerPrice()", () => {
 describe("Product.getResellerPrice()", () => {
   it("matches the same margin/VAT formula as Price", () => {
     const product = makeTypedProduct();
-    product.price.mgn = 10;
+    product.price.margin = 10;
     product.price.vat = 20;
 
     expect(product.getResellerPrice()).toBe(product.price.getResellerPrice());
