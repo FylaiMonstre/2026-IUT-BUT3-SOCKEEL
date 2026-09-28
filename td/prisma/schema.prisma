@@ -1,0 +1,96 @@
+// Prisma schema — replaces the EF Core models in Models/*.cs.
+// Unlike the C# version, Price/Discounts/Images map naturally here:
+// Prisma's Json type and native array support remove the need for the
+// hand-synced "shadow columns" (PriceAmount/DiscountsCsv/ImagesJson) and
+// the SyncEfColumns()/HydrateFromEfColumns() dance entirely.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Product {
+  id          String   @id @default(uuid()) @map("ProductId")
+  name        String   @db.VarChar(256)
+  slug        String?  @db.VarChar(256)
+
+  priceAmount   Decimal @map("PriceAmount") @db.Decimal(18, 2)
+  priceCurrency String  @map("PriceCurrency") @db.VarChar(8)
+  priceMargin   Decimal @default(20) @map("PriceMargin") @db.Decimal(5, 2)
+  priceVat      Decimal @default(20) @map("PriceVat") @db.Decimal(5, 2)
+
+  discounts   String[] @default([])
+  images      Json     @default("{}")
+
+  weight      Float
+  dimensions  String?  @db.VarChar(64)
+
+  quantity    Int      @default(0)
+  stock       Int      @default(0)
+
+  warehouseId String?  @map("WarehouseId")
+  warehouse   Warehouse? @relation(fields: [warehouseId], references: [id])
+
+  status      String   @default("active") @db.VarChar(32)
+
+  createdAt   DateTime @default(now()) @map("CreatedAt")
+  updatedAt   DateTime @updatedAt @map("UpdatedAt")
+
+  suppliers     ProductSupplier[]
+  notifications Notification[]
+
+  @@map("Products")
+}
+
+// Explicit join table for the region -> supplier map, instead of the
+// [NotMapped] Dictionary<string, Supplier> that ProductService kept in sync by hand.
+model ProductSupplier {
+  productId  String
+  supplierId String
+  region     String @db.VarChar(8)
+
+  product  Product  @relation(fields: [productId], references: [id])
+  supplier Supplier @relation(fields: [supplierId], references: [id])
+
+  @@id([productId, region])
+  @@map("ProductSuppliers")
+}
+
+model Supplier {
+  id     String @id @default(uuid())
+  name   String @db.VarChar(256)
+  email  String @db.VarChar(256)
+  region String @db.VarChar(8)
+
+  products ProductSupplier[]
+
+  @@map("Suppliers")
+}
+
+model Warehouse {
+  id      String @id @default(uuid())
+  name    String @db.VarChar(256)
+  address String? @db.VarChar(512)
+  region  String? @db.VarChar(8)
+
+  products Product[]
+
+  @@map("Warehouses")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  recipient String   @db.VarChar(256)
+  subject   String?  @db.VarChar(256)
+  body      String?
+  channel   String   @db.VarChar(16) // "email" | "sms" | "push"
+  sentAt    DateTime @default(now()) @map("SentAt")
+
+  productId String?  @map("ProductId")
+  product   Product? @relation(fields: [productId], references: [id])
+
+  @@map("Notifications")
+}
