@@ -13,6 +13,7 @@
   "type": "commonjs",
   "devDependencies": {
     "@types/node": "^22.20.2",
+    "@vitest/coverage-v8": "^5.0.0",
     "prisma": "^7.10.0",
     "typescript": "^5.9.3",
     "vite": "^8.3.0",
