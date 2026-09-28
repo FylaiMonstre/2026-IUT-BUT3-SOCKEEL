@@ -92,9 +92,45 @@ Sur l'onglet **Files changed** de la PR : cliquer sur une ligne pour la
 commenter. **Un commentaire = un problème**, avec le *pourquoi*. Minimum par
 TD indiqué dans l'énoncé (ex. 5 problèmes).
 
-### Étape 7 — Corriger et pousser
+### Étape 7 — Corriger, vérifier les tests et pousser
 
-Corriger au moins le nombre de problèmes exigé, puis :
+Depuis td/:
+
+cd td
+
+
+
+ Corriger au moins le nombre de problèmes exigé, puis :
+
+ #### AVANT DE COMMITER
+
+faire tourner les tests localement:
+
+```sh
+ npm test
+```
+
+ou
+
+```sh
+npx vitest run
+```
+
+vérifier la couverture de code (ne doit pas diminuer entre 2 PR )
+
+```
+npx vitest run --coverage --coverage.reportOnFailure
+```
+
+Points clés :
+- --coverage nécessite le package @vitest/coverage-v8 (déjà ajouté en devDependency dans td/package.json).
+- --coverage.reportOnFailure est indispensable ici : sur vitest 5.0.0, si des tests échouent, le tableau de couverture ne s'affiche pas du tout sans ce flag.
+
+Si tu veux juste le résumé texte (sans le détail par ligne) :
+
+npx vitest run --coverage --coverage.reportOnFailure --coverage.reporter=text
+
+
 
 ```sh
 git add .
