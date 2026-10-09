@@ -267,6 +267,9 @@ export class Product {
   // --- Stock ---
 
   async receiveStock(quantity: number): Promise<void> {
+    //Test évitant d'avoir des valeurs négatives ou non finies pour la quantité
+    if (!Number.isFinite(quantity) || quantity <= 0)
+      throw new Error(`quantity must be a positive finite number, got: ${quantity}`);
     this.stock += quantity;
     this.quantity += quantity;
     this.updatedAt = new Date();
@@ -282,6 +285,9 @@ export class Product {
   }
 
   async sell(quantity: number): Promise<void> {
+    //Test évitant d'avoir des valeurs négatives ou non finies pour la quantité
+    if (!Number.isFinite(quantity) || quantity <= 0)
+      throw new Error(`quantity must be a positive finite number, got: ${quantity}`);
     if (this.stock < quantity) throw new Error("Not enough stock");
 
     this.stock -= quantity;
