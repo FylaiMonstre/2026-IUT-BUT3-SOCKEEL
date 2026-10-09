@@ -12,7 +12,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Certaines variables ne changeaient jamais de valeur, donc on les a définit comme constantes (plus de valeur magiques)
+// Certaines variables ne changeaient jamais de valeur, donc on les a définit comme constantes (plus &  de valeur magiques)
 const DEFAULT_MARGIN_PCT = 15;
 const DEFAULT_VAT_PCT = 20;
 const MAX_ACTIVE_DISCOUNTS = 2;
@@ -175,52 +175,18 @@ export class Product {
   // --- Catalog / images / discounts ---
 
   async addImage(ctx: string, url: string, overwrite: boolean = true): Promise<void> {
-    if (url) {
-      if (url.substring(0, URL_SCHEME.length) === URL_SCHEME) {
-        if (!(this.images[ctx] === undefined)) {
-          let k = ctx;
-          for (const [, s] of this.suppliersByRegion) {
-            if (s.rgn) {
-              if (s.eml) {
-                if (s.eml.indexOf("@") > 0 && s.eml.indexOf(".", s.eml.indexOf("@")) > s.eml.indexOf("@")) {
-                  k = ctx + "-" + s.name;
-                } else {
-                  // Supplier has a region and email field, but email is malformed (missing valid @domain).
-                  // Treat as a data integrity error: throw instead of gracefully degrading.
-                  throw new Error(`Supplier ${s.name} has a malformed email: ${s.eml}`);
-                }
-              } else {
-                // Supplier has a region but NO email field (empty string, falsy).
-                // Fall back to generic "-supplier" marker, losing the supplier's identity.
-                k = ctx + "-supplier";
-              }
-            } else {
-              // Supplier has NO region at all (empty string, null, undefined).
-              // Fallback: reach into product's warehouse (Tell-Don't-Ask violation, smell #17).
-              // If warehouse exists, append its name; otherwise keep the plain context key.
-              k = this.wh ? ctx + "-" + this.wh.name
-         : ctx;
-            }
-          }
-          this.images[k] = url;
-        } else {
-          this.images[ctx] = url;
-        }
-        this.updatedAt = new Date();
-        await prisma.product.update({
-          where: { id: this.id },
-          data: { images: this.images as Prisma.InputJsonValue, updatedAt: this.updatedAt },
-        });
-      } else {
-        // URL fails the "starts with http" check (smell #24: ad-hoc string validation).
-        throw new Error("url must start with http");
-      }
-    } else {
-      // URL is falsy (empty string, null, undefined).
-      // Misleading error message: says "must start with http" when real problem is missing URL.
-      throw new Error("url must start with http");
-    }
-  }
+  if (!url) throw new Error("url is required");
+  if (!/^https?:\/\/.+/.test(url)) throw new Error(`url must be an http(s) URL, got: ${url}`);
+
+  if (this.images[ctx] !== undefined && !overwrite) return;
+
+  this.images[ctx] = url;
+  this.updatedAt = new Date();
+  await prisma.product.update({
+    where: { id: this.id },
+    data: { images: this.images as Prisma.InputJsonValue, updatedAt: this.updatedAt },
+  });
+}
 
   getValidUntil(): Date | null {
     return this.validUntil;
