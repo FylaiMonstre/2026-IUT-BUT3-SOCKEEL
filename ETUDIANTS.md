@@ -25,14 +25,21 @@
 
 | Nom (état civil) | Pseudo GitHub | Rôle |
 |------------------|---------------|------|
-|                  |               | porteur |
-|                  |               | membre |
-|                  |               | membre |
+| SOCKEEL          | FylaiMonstre  | porteur |
+| PONCET           | kazkass       | membre |
+| BENDRELL         | Nethagames    | membre |
 
 ## 3. Rendu
 
-- **TD :** (ex. `TD1`)
-- **Lien de la PR :** (à coller une fois la PR ouverte)
+- **TD :** TD
+- **Lien de la PR :**
+  - 1 https://github.com/FylaiMonstre/2026-IUT-BUT3-SOCKEEL/pull/1
+  - 2 https://github.com/FylaiMonstre/2026-IUT-BUT3-SOCKEEL/pull/2
+  - 3 https://github.com/FylaiMonstre/2026-IUT-BUT3-SOCKEEL/pull/3
+  - 4 https://github.com/FylaiMonstre/2026-IUT-BUT3-SOCKEEL/pull/4
+  - 5 https://github.com/FylaiMonstre/2026-IUT-BUT3-SOCKEEL/pull/5
+  - 6 https://github.com/FylaiMonstre/2026-IUT-BUT3-SOCKEEL/pull/6
+  - 7 https://github.com/FylaiMonstre/2026-IUT-BUT3-SOCKEEL/pull/7
 
 ## 4. Note — réservée à l'enseignant
 
