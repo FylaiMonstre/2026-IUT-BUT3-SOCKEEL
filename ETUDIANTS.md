@@ -25,13 +25,13 @@
 
 | Nom (état civil) | Pseudo GitHub | Rôle |
 |------------------|---------------|------|
-|                  |               | porteur |
-|                  |               | membre |
-|                  |               | membre |
+| Sockeel          | FylaiMonstre  | porteur |
+| Poncet           | kazkass       | membre |
+| Bendrell         | Nethagames    | membre |
 
 ## 3. Rendu
 
-- **TD :** (ex. `TD1`)
+- **TD :** TD1
 - **Lien de la PR :** (à coller une fois la PR ouverte)
 
 ## 4. Note — réservée à l'enseignant
