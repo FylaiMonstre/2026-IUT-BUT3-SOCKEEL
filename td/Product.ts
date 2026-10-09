@@ -202,7 +202,8 @@ export class Product {
                 this.discounts.push(dscCode);
                 this.setValidUntil(validUntil);
                 this.updatedAt = new Date();
-                prisma.product.update({
+                // il manquait un await ici pour que la mise à jour de la base de données se fasse correctement
+                await prisma.product.update({
                   where: { id: this.id },
                   data: { discounts: this.discounts, updatedAt: this.updatedAt },
                 });
