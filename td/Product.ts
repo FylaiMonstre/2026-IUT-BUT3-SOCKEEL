@@ -250,18 +250,17 @@ export class Product {
 
   // --- Stock ---
 
+  
   async receiveStock(quantity: number): Promise<void> {
     //Test évitant d'avoir des valeurs négatives ou non finies pour la quantité
     if (!Number.isFinite(quantity) || quantity <= 0)
       throw new Error(`quantity must be a positive finite number, got: ${quantity}`);
+    if (!this.wh)
+      throw new Error(`Cannot restock ${this.name}: no warehouse assigned`);
     this.stock += quantity;
     this.quantity += quantity;
     this.updatedAt = new Date();
-    console.log(`Restocking ${this.name
-
-    } at ${this.wh!.name
-
-    }`);
+    console.log(`Restocking ${this.name} at ${this.wh.name}`);
     await prisma.product.update({
       where: { id: this.id },
       data: { stock: this.stock, quantity: this.quantity, updatedAt: this.updatedAt },
