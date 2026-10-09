@@ -148,28 +148,11 @@ export class Product {
     this.updatedAt = new Date();
   }
 
+  // 
   getDisplayLabel(): string {
-    let label: string;
-    if (this.status === "deprecated") {
-      label = `[DISCONTINUED] ${this.name
-  
-      }`;
-    } else {
-      if (this.stock === 0) {
-        label = `[OUT OF STOCK] ${this.name
-    
-        }`;
-      } else {
-        if (this.status === "active") {
-          label = this.name
-    ;
-        } else {
-          label = this.name
-    ;
-        }
-      }
-    }
-    return label;
+    if (this.status === "deprecated") return `[DISCONTINUED] ${this.name}`; // cas terminal → label dédié
+    if (this.status === "out_of_stock" || this.stock === 0) return `[OUT OF STOCK] ${this.name}`; // statut persistant OR stock nul
+    return this.name; // cas nominal (plus de if/else imbriqués)  
   }
 
   // --- Catalog / images / discounts ---
