@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "node": "^26.11.1",
+    "prisma": "^8.0.0-rc.22",
+    "vitest": "^5.0.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.10.0"
+  },
+  "allowScripts": {
+    "node@26.11.1": true
+  }
+}
